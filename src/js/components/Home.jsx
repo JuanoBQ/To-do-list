@@ -1,28 +1,81 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import "./Home.css";
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
 
-//create your first component
 const Home = () => {
-	return (
-		<div className="text-center">
-            
+  const [inputValue, setInputValue] = useState("");
+  const [items, setItems] = useState([]);
+  const [taskCounter, setTaskCounter] = useState(0);
+  const [noTaskAdvise, setNoTaskAdvise] = useState();
 
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
-	);
+  useEffect(() => {
+    setTaskCounter(items.length);
+    noTask();
+  }, [inputValue, items, taskCounter]);
+
+  const addItems = () => {
+    if (inputValue !== "") {
+      setItems([...items, inputValue]);
+    }
+  };
+
+  const noTask = () => {
+    if (taskCounter === 0) {
+      setNoTaskAdvise(<h2>No task yet</h2>);
+    } else if (taskCounter > 0) {
+      return setNoTaskAdvise();
+    }
+  };
+
+  return (
+    <div className="to-do-list">
+      <label htmlFor="Todo" className="label-text">
+        To do list
+      </label>
+      <div className="list">
+        <input
+          type="text"
+          id="to-do"
+          placeholder="What needs to be done?"
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              addItems();
+            }
+          }}
+        />
+        <ul className="u-list">
+          {noTaskAdvise}
+          {items.map((item, index) => {
+            return (
+              <div className="task" key={index}>
+                <div className="item">
+                  <li>{item}</li>
+                </div>
+                <div className="icon">
+                  <i
+                    class="fa-solid fa-x"
+                    onClick={() => {
+                      setItems(
+                        items.filter((item, currentIndex) => {
+                          return index != currentIndex;
+                        })
+                      );
+                    }}
+                  ></i>
+                </div>
+                <hr></hr>
+              </div>
+            );
+          })}
+        </ul>
+        <hr />
+        <p className="task-left">{taskCounter} items</p>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
